@@ -278,7 +278,16 @@ Decades <- lyrics %>%
                          ifelse(year < 2010, "00s", "10s"))) 
 
 # Average songs per album by decade
-Decades %>% group_by(Decade) %>% distinct(album) %>% count() %>% rename(n2 = n) %>% inner_join(Decades %>% group_by(Decade) %>% distinct(track_title) %>% count()) %>% mutate(avg = n/n2)
+Decades %>% 
+  group_by(Decade) %>%
+  distinct(album) %>%
+  count() %>%
+  rename(n2 = n) %>% 
+  inner_join(Decades %>%
+               group_by(Decade) %>%
+               distinct(track_title) %>%
+               count()) %>% 
+  mutate(avg = n/n2)
 
 # Average words per album and song per decade
 Decades %>% 
