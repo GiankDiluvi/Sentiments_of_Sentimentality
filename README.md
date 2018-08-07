@@ -1,2 +1,3 @@
-# Sentiments_of_Sentimentality
-Code for performing text mining and sentiment analysis on the lyrics of popular songs
+# Text Mining the Sentiments Behind the Grammys
+
+Import the lyrics of the songs of all the albums that have won the Grammy Award for Album of the Year using Parry's `GeniusR` package. Perform text mining and sentiment analysis on them with Silge and Robinson's `tidytext` package. All plots are generated with Wickham's `ggplot2` and Kassambara's `easyGgplot2` packages.
