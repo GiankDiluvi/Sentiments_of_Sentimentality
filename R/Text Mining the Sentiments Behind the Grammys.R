@@ -14,26 +14,12 @@ library(geniusR)
 library(scales)
 library(easyGgplot2)
 library(BMS)
+library(beepr)
 theme_set(theme_classic())
 
 
 # Set parameters
 colores <- hue_pal()(6)
-
-rden <- function(n, den)
-{
-  diffs <- diff(den$x)
-  # Making sure we have equal increments
-  stopifnot(all(abs(diff(den$x) - mean(diff(den$x))) < 1e-9))
-  total <- sum(den$y)
-  den$y <- den$y / total
-  ydistr <- cumsum(den$y)
-  yunif <- runif(n)
-  indices <- sapply(yunif, function(y) min(which(ydistr > y)))
-  x <- den$x[indices]
-  
-  return(x)
-}
 
 
 # Set seed for reproducibility
@@ -57,16 +43,16 @@ artists <- c("Henry Mancini",
              "Blood, Sweat & Tears",
              "Simon & Garfunkel",
              "Carole King",
-             "George Harrison & Friends",
+             "George Harrison",
              "Stevie Wonder",
              "Stevie Wonder",
              "Paul Simon",
              "Stevie Wonder",
-             "Fleetwod Mac",
+             "Fleetwood Mac",
              "Bee Gees",
              "Billy Joel",
              "Christopher Cross",
-             "John Lennon & Yoko Ono",
+             "John Lennon",
              "Toto",
              "Michael Jackson",
              "Lionel Richie",
@@ -104,66 +90,6 @@ artists <- c("Henry Mancini",
              "Adele",
              "Bruno Mars")
 
-sex <- c("M",
-         "M",
-         "M",
-         "W",
-         "M",
-         "W",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "W",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "Mix",
-         "Mix",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "M",
-         "W",
-         "M",
-         "W",
-         "M",
-         "W",
-         "M",
-         "W",
-         "W",
-         "M",
-         "W",
-         "M",
-         "M",
-         "Mix",
-         "W",
-         "M",
-         "M",
-         "M",
-         "W",
-         "M",
-         "Mix",
-         "W",
-         "Mix",
-         "W",
-         "M",
-         "M",
-         "M",
-         "W",
-         "W",
-         "M")
-
 albums <- c("The Music from Peter Gunn",
             "Come Dance With Me!",
             "The Button-Down Mind of Bob Newhart",
@@ -174,7 +100,7 @@ albums <- c("The Music from Peter Gunn",
             "A Man and His Music",
             "Sgt. Pepper's Lonely Hearts Club Band",
             "By the Time I Get to Phoenix",
-            "Blood, Sweat & Tears",
+            "Blood, Sweat Tears",
             "Bridge over Troubled Water",
             "Tapestry",
             "The Concert for Bangladesh",
@@ -183,7 +109,7 @@ albums <- c("The Music from Peter Gunn",
             "Still Crazy After All These Years",
             "Songs in the Key of Life",
             "Rumours",
-            "Saturday Night Fever: The Original Movie Soundtrack",
+            "Saturday Night Fever: The Original Movie Sound Track",
             "52nd Street",
             "Christopher Cross",
             "Double Fantasy",
@@ -206,7 +132,7 @@ albums <- c("The Music from Peter Gunn",
             "The Miseducation of Lauryn Hill",
             "Supernatural",
             "Two Against Nature",
-            "O Brother, Where Art Thou? soundtrack",
+            "O Brother, Where Art Thou? (Music from the Motion Picture)",
             "Come Away with Me",
             "Speakerboxxx/The Love Below",
             "Genius Loves Company",
@@ -233,26 +159,75 @@ lyrics <- tibble(track_title = character(),
                  lyric = character(),
                  line = integer(),
                  album = character(),
-                 year = double(),
-                 sex = character())
+                 year = double())
 
 # Only some albums' lyrics are available in genius
-available <- c(2, 6:10, 12, 13, 15:18, 21, 22, 24:34, 36:42, 44:59)
+available <- c(2, 6:59)
 
 # Save available lyrics in the lyrics tibble for further analyses
 for(i in available){
   aux <- geniusR::genius_album(artist = artists[i],
                                album = albums[i]) %>% 
     mutate(album = albums[i],
-           year = year[i],
-           sex = sex[i])
+           year = year[i])
   
   lyrics <- bind_rows(lyrics, aux)
+  #beepr::beep(2)
 }
+#beepr::beep(8)
+
+
+# SONG ANALYSIS ####
+# Compute different number of songs
+lyrics %>% 
+  dplyr::distinct(track_title) %>% 
+  dplyr::count()
+
+# Compute different number of albums
+lyrics %>% 
+  dplyr::distinct(album) %>% 
+  dplyr::count()
+746/55
+
+# Compute total number of words
+lyrics %>%
+  tidytext::unnest_tokens(word, lyric)
+179381/747
+  
+
+
+# Compute average number of albums, songs, and words per decade
+Decades <- lyrics %>% 
+  dplyr::mutate(Decade = ifelse(year < 2000, 
+                                paste(as.character(10*(floor( (year - 1900) / 10) )), "s", sep = ""),
+                                ifelse(year < 2010, "00s", "10s"))) 
+
+Albums_Songs_Words <- Decades %>% 
+  dplyr::group_by(Decade) %>% 
+  dplyr::summarise(Songs = n_distinct(track_title)) %>% 
+  dplyr::left_join(
+    Decades %>% 
+      dplyr::group_by(Decade) %>% 
+      dplyr::summarise(Albums = n_distinct(album))
+  ) %>% 
+  dplyr::left_join(
+    Decades %>% 
+      tidytext::unnest_tokens(word, lyric) %>% 
+      dplyr::group_by(Decade) %>% 
+      dplyr::summarise(Words = n())
+  ) %>% 
+  dplyr::mutate(SpA = Songs / Albums,
+                WpS = Words / Songs)
+
+
+
+
+
 
 
 
 # FRECUENCY ANALYSIS ####
+
 # Common words overall
 graph.common.words <- lyrics %>% 
   unnest_tokens(word, lyric) %>% 
@@ -270,12 +245,10 @@ graph.common.words <- lyrics %>%
   coord_flip()
 
 ggsave("Plots/graph_common_words.png")
+ggsave("Plots/graph_common_words.pdf")
 
 
-Decades <- lyrics %>% 
-  mutate(Decade = ifelse(year < 2000, 
-                         paste(as.character(10*(floor( (year - 1900) / 10) )), "s", sep = ""),
-                         ifelse(year < 2010, "00s", "10s"))) 
+
 
 # Average songs per album by decade
 Decades %>% 
@@ -333,7 +306,7 @@ graph1 <- graph.common.words.decade %>%
        y = NULL,
        title = "60s") +
   scale_y_continuous(labels = scales::comma,
-                     limits = c(0, 400)) +
+                     limits = c(0, 500)) +
   coord_flip() +
   guides(fill=FALSE)
 
@@ -347,7 +320,7 @@ graph2 <- graph.common.words.decade %>%
        y = NULL,
        title = "70s") +
   scale_y_continuous(labels = scales::comma,
-                     limits = c(0, 400)) +
+                     limits = c(0, 500)) +
   coord_flip()
 guides(fill=FALSE)
 
@@ -361,7 +334,7 @@ graph3 <- graph.common.words.decade %>%
        y = NULL,
        title = "80s") +
   scale_y_continuous(labels = scales::comma,
-                     limits = c(0, 400)) +
+                     limits = c(0, 500)) +
   coord_flip() +
   guides(fill=FALSE)
 
@@ -375,7 +348,7 @@ graph4 <- graph.common.words.decade %>%
        y = NULL,
        title = "90s") +
   scale_y_continuous(labels = scales::comma,
-                     limits = c(0, 400)) +
+                     limits = c(0, 500)) +
   coord_flip() +
   guides(fill=FALSE)
 
@@ -389,7 +362,7 @@ graph5 <- graph.common.words.decade %>%
        y = NULL,
        title = "00s") +
   scale_y_continuous(labels = scales::comma,
-                     limits = c(0, 400)) +
+                     limits = c(0, 500)) +
   coord_flip() +
   guides(fill=FALSE)
 
@@ -403,7 +376,7 @@ graph6 <- graph.common.words.decade %>%
        y = NULL,
        title = "10s") +
   scale_y_continuous(labels = scales::comma,
-                     limits = c(0, 400)) +
+                     limits = c(0, 500)) +
   coord_flip() +
   guides(fill=FALSE)
 
@@ -414,10 +387,15 @@ ggsave("Plots/graph_common_words_decade.png",
        ggplot2.multiplot(graph1, graph2, graph3,
                          graph4, graph5, graph6,
                          cols = 3))
+ggsave("Plots/graph_common_words_decade.pdf",
+       ggplot2.multiplot(graph1, graph2, graph3,
+                         graph4, graph5, graph6,
+                         cols = 3))
 
 
 
-# NET SENTIMENT ANALYSIS
+# NET SENTIMENT ANALYSIS ####
+
 albums.sentiments <- lyrics %>% 
   unnest_tokens(word, lyric) %>% 
   inner_join(get_sentiments("bing")) %>% 
@@ -466,6 +444,7 @@ graph.albums.sentiment <- albums.sentiments %>%
   theme(text = element_text(size = 16))
 
 ggsave("Plots/graph_annual_sentiment.png")
+ggsave("Plots/graph_annual_sentiment.pdf")
 
 
 # Net mean sentiment per year
@@ -480,6 +459,7 @@ graph.albums.mean.sentiment <- albums.sentiments %>%
   theme(text = element_text(size = 16))
 
 ggsave("Plots/graph_annual_mean_sentiment.png")
+ggsave("Plots/graph_annual_mean_sentiment.pdf")
 
 
 # Net sentiment average by decade
@@ -496,166 +476,258 @@ graph.albums.mean.sentiment.decade <- albums.sentiments %>%
                      labels = c("60s", "70s", "80s", "90s", "00s", "10s")) +
   scale_y_continuous(breaks = seq(from = 0, to = 80, by = 20),
                      labels = seq(from = 0, to = 80, by = 20),
-                     limits = c(0, 65)) +
+                     limits = c(0, 80)) +
   scale_fill_discrete(breaks = c("60s", "70s", "80s", "90s", "00s", "10s")) +
   theme(text = element_text(size = 16))
 
 ggsave("Plots/graph_decade_mean_sentiment.png")
+ggsave("Plots/graph_decade_mean_sentiment.pdf")
 
 
-# BAYESIAN ANALYSIS ####
-# Save density object
-density.albums <- albums.sentiments %>% 
+
+# PREDICTING THE UNPREDICTABLE ####
+
+
+# Compute average net sentiments and other descriptive statistics
+albums.sentiments %>% 
   select(sentiment) %>% 
-  pull %>% 
-  density()
-
-# Obtain y-values for MH Algorithm
-p.grammy <- dnorm(density.albums$x, mean = 0, sd = 10000)
-dens.y <- approxfun(x = density.albums$x,
-                    y = p.grammy * density.albums$y,
-                    rule = 2)
+  summary
 
 
-
-
-# Metropolis-Hastings algorithm to sample
-# from posterior distribution
-
-N <- 1000   # Sample size
-B <- 1000   # Number of iterations pero sample unit
-X <- NULL   # Initialize sample
-
-
-for(i in 1:N){
-  
-  x <- NULL
-  x <- rnorm(n = 1, mean = 0, sd = 1000)   # Initial guess
-  
-  for(j in 2:B){
-    
-    y <- rnorm(n = 1, mean = 0, sd = 1000)  # From changes PDF
-    # Hastings quotient
-    r <- dens.y(y) / dens.y(x[j-1])
-    r <- min(1, r)                          # To make it a probability
-    
-    xnew <- ifelse(runif(1) < r, y, x[j-1]) # Accept or reject new point
-    x <- c(x, xnew)
-    
-  }
-  
-  # Take last number to be an observation of
-  # the posterior distribution
-  X <- c(X, x[B])
-}
-
-
-
-
-
-# Likelihood density graph
-density.graph <- albums.sentiments %>%
-  ggplot(aes(sentiment)) + 
-  geom_density(fill = "skyblue") +
-  labs(x = "Sentiment",
-       y = "Density")
-
-ggsave("Plots/graph_sentiment_density.png")
-
-
-
-# Posterior density graph
-posterior.density.graph <- tibble(Density = X) %>%
-  ggplot(aes(Density)) + 
-  geom_density(fill = "skyblue") +
-  labs(x = "Sentiment",
-       y = "Density")
-
-ggsave("Plots/graph_sentiment_posterior_density.png")
-
-
-ggplot2.multiplot(density.graph, posterior.density.graph)
-
-
-# Graph all together
-graph.together <- albums.sentiments %>% 
-  select(Sentiment = sentiment) %>% 
-  mutate(Density = "P(Sentiment | Grammy)") %>% 
-  bind_rows(tibble(Sentiment = X,
-                   Density = rep("P(Grammy | Sentiment)", length(X)))) %>% 
-  bind_rows(tibble(Sentiment = rnorm(n = 10000, mean = 0, sd = 1000),
-                   Density = rep("P(Grammy)", 10000))) %>% 
-  ggplot(aes(x = Sentiment, fill = Density)) +
-  geom_density(alpha = 0.25) +
-  xlim(-150, 250) +
-  scale_fill_discrete(breaks=c("P(Grammy)", "P(Sentiment | Grammy)", "P(Grammy | Sentiment)")) +
-  labs(y = "Density") +
+# Graph net sentiment trend
+sentiments_trend <- albums.sentiments %>% 
+  ggplot(aes(year, sentiment)) +
+  geom_point(aes(color = Decade),
+             size = 3) +
+  geom_line() +
+  geom_smooth(method = "lm",
+              color = "red",
+              se = FALSE) +
+  scale_color_discrete(breaks = c("60s", "70s", "80s", "90s", "00s", "10s")) +
+  labs(x = "Year",
+       y = "Net Sentiment") +
   theme(text = element_text(size = 16))
 
-ggsave("Plots/graph_densities_together.png", graph.together)
+ggsave("Plots/graph_sentiment_linear_trend.png")
+ggsave("Plots/graph_sentiment_linear_trend.pdf")
 
-
-# Only posterior
-graph.posterior <- tibble(Sentiment = X) %>% 
-  ggplot(aes(Sentiment)) +
-  geom_density(fill = hue_pal()(3)[1], alpha = 0.25) +
-  labs(y = "Density") +
-  theme(text = element_text(size = 16)) +
-  xlim(-150, 250)
-
-ggsave("Plots/graph_posterior_density.png")
+# Adjust model
+model <- lm(albums.sentiments$sentiment ~ albums.sentiments$year)
+summary(model)
 
 
 
-# MUSE ANALYSIS
-# Import two latest Muse songs
-dig.down <- genius_lyrics(artist = "Muse", song = "Dig Down")
-thought.contagion <- genius_lyrics(artist = "Muse", song = "Thought Contagion")
 
-# Compute net sentiment per song
-muse <- bind_rows(dig.down, thought.contagion) %>% 
+
+# IMPORT NOT-WINNERS ####
+
+# Determine which nominee will be selected each year
+set.seed(950323)
+nominees <- tibble(Year = year[available],
+                   Number = sample(1:4,
+                                   size = length(available),
+                                   replace = TRUE))
+
+# Artists and albums
+artists_nw <- c("Andy Williams",
+                "The Beatles",
+                "Richard Rodgers",
+                "The Beatles",
+                "Bobbie Gentry",
+                "Simon and Garfunkel",
+                "The Beatles",
+                "Crosby, Stills, Nash And Young",
+                "George Harrison",
+                "Harry Nilsson",
+                "Bette Midler",
+                "Wings",
+                "Linda Ronstadt",
+                "George Benson",
+                "James Taylor",
+                "The Rolling Stones",
+                "Donna Summer",
+                "Pink Floyd",
+                "Al Jarreau",
+                "Paul McCartney",
+                "The Police",
+                "Tina Turner",
+                "Sting",
+                "Janet Jackson",
+                "Michael Jackson",
+                "Steve Winwood",
+                "Don Henley",
+                "Mariah Carey",
+                "Amy Grant",
+                "Annie Lennox",
+                "Billy Joel",
+                "Eric Clapton",
+                "Joan Osborne",
+                "Fugees",
+                "Paul McCartney",
+                "Garbage",
+                "Dixie Chicks",
+                "Beck",
+                "Outkast",
+                "Bruce Springsteen",
+                "Justin Timberlake",
+                "Usher",
+                "Gwen Stefani",
+                "Red Hot Chili Peppers",
+                "Amy Winehouse",
+                "Ne Yo",
+                "Lady Gaga",
+                "Lady Gaga",
+                "Rihanna",
+                "Fun",
+                "Kendrick Lamar",
+                "Beyonce",
+                "Chris Stapleton",
+                "Drake",
+                "Kendrick Lamar")
+
+albums_nw <- c("Days of Wine and Roses and Other TV Requests",
+               "Help",
+               "The Sound of Music Original Soundtrack Recording",
+               "Revolver",
+               "Ode to Billie Joe",
+               "Bookends",
+               "Abbey Road",
+               "Deja Vu",
+               "All Things Must Pass",
+               "Nilsson Schmilsson",
+               "The Divine Miss M",
+               "Band on the Run",
+               "Heart Like a Wheel",
+               "Breezin",
+               "JT",
+               "Some Girls",
+               "Bad Girls",
+               "The Wall",
+               "Breakin Away",
+               "Tug of War",
+               "Synchronicity",
+               "Private Dancer",
+               "The Dream of the Blue Turtles",
+               "Control",
+               "Bad",
+               "Roll with It",
+               "The End of the Innocence",
+               "Mariah Carey",
+               "Heart in Motion",
+               "Diva",
+               "River of Dreams",
+               "From the Cradle",
+               "Relish",
+               "The Score",
+               "Flaming Pie",
+               "Version 2 0",
+               "Fly",
+               "Midnite Vultures",
+               "Stankonia",
+               "The Rising",
+               "Justified",
+               "Confessions",
+               "Love. Angel. Music. Baby.",
+               "Stadium Arcadium",
+               "Back to Black",
+               "Year of the Gentleman",
+               "The Fame",
+               "The Fame Monster",
+               "Loud",
+               "Some Nights",
+               "good kid, m.A.A.d city",
+               "Beyonce",
+               "Traveller",
+               "Views",
+               "Damn")
+
+# Import lyrics from not winners
+lyrics_nw <- tibble(track_title = character(),
+                    track_n = integer(),
+                    lyric = character(),
+                    line = integer(),
+                    album = character(),
+                    year = double())
+
+
+
+# Save available lyrics in the lyrics tibble for further analyses
+for(i in 1:length(albums_nw)){
+  
+  print(paste0(albums_nw[i], " - ", artists_nw[i]))
+  
+  aux <- geniusR::genius_album(artist = artists_nw[i],
+                               album = albums_nw[i]) %>% 
+    mutate(album = albums_nw[i],
+           year = nominees$Year[i])
+  
+  #beepr::beep(2)
+  
+  lyrics_nw <- bind_rows(lyrics_nw, aux)
+}
+#beepr::beep(8)
+
+
+# Compute net sentiment of songs
+albums.sentiments_nw <- lyrics_nw %>% 
   unnest_tokens(word, lyric) %>% 
-  anti_join(stop_words) %>% 
   inner_join(get_sentiments("bing")) %>% 
-  count(track_title, sentiment) %>% 
+  count(year, sentiment) %>% 
   spread(sentiment, n, fill = 0) %>% 
-  mutate(sentiment = positive - negative)
-
-# Function with posterior density values
-#posterior <- approxfun(density(X)$y, 
-#                       rule = 2)
-posterior <- ecdf(X)
-
-# Probabilty of Muse winning the Grammy
-posterior(2) - posterior(-5)
+  mutate(sentiment = positive - negative,
+         mean_sentiment = sentiment - mean(sentiment),
+         Decade = ifelse(year < 2000, 
+                         paste(as.character(10*(floor( (year - 1900) / 10) )), "s", sep = ""),
+                         ifelse(year < 2010, "00s", "10s")))
 
 
+# LOGISTIC REGRESSION ANALYSIS ####
+
+# Create data set
+dataset <- tibble(sentiment = c(albums.sentiments$sentiment,
+                                albums.sentiments_nw$sentiment),
+                  winner = c(rep(1, 55), rep(0, 55)))
+
+# Fit logistic regression
+logistic <- glm(winner ~ sentiment,
+                family = binomial(link = "logit"),
+                data = dataset)
 
 
+# Graph logistic regressions
 
-# More albums
-second.law <- genius_album(artist = "Muse", album = "The 2nd Law") %>% 
-  unnest_tokens(word, lyric) %>% 
-  anti_join(stop_words) %>% 
-  inner_join(get_sentiments("bing")) %>% 
-  count(track_title, sentiment) %>% 
-  spread(sentiment, n, fill = 0) %>% 
-  mutate(sentiment = positive - negative)
-
-
-resistance <- genius_album(artist = "Muse", album = "The Resistance") %>% 
-  unnest_tokens(word, lyric) %>% 
-  anti_join(stop_words) %>% 
-  inner_join(get_sentiments("bing")) %>% 
-  count(track_title, sentiment) %>% 
-  spread(sentiment, n, fill = 0) %>% 
-  mutate(sentiment = positive - negative)
+# intercept <- logistic$coefficients[1]
+# sentiment <- logistic$coefficients[2]
+# 
+# xx <- seq(from=-700, to=700, by=1)
+# yy <- rep(0, length(xx))
+# for(i in 1:length(yy)){
+#   eta <- intercept + xx[i]*sentiment
+#   yy[i] <- exp(eta) / (1 + exp(eta))
+# }
+# 
+# plot(xx, yy)
 
 
-drones <- genius_album(artist = "Muse", album = "Drones") %>% 
-  unnest_tokens(word, lyric) %>% 
-  anti_join(stop_words) %>% 
-  inner_join(get_sentiments("bing")) %>% 
-  count(track_title, sentiment) %>% 
-  spread(sentiment, n, fill = 0) %>% 
-  mutate(sentiment = positive - negative)
+graph.logistic.regression <- dataset %>% 
+  dplyr::mutate(Winner = ifelse(winner==1, "Yes", "No")) %>% 
+  ggplot() +
+  geom_point(aes(x = sentiment,
+                 y = winner,
+                 color = Winner)) +
+  stat_smooth(aes(x = sentiment,
+                  y = winner),
+              method = "glm",
+              method.args = list(family="binomial"), 
+              se = FALSE,
+              color = "red") +
+  labs(x = "Sentiment",
+       y = "Estimated probability of winning",
+       color = "Won the\n Grammy?") +
+  scale_color_manual(values = c("orange2", "green3"),
+                       breaks = c("Yes", "No")) +
+  theme(text = element_text(size = 16))
+#xseq = seq(-300, 300, length=2000)
+
+ggsave("Plots/graph_logistic_regression.png")
+ggsave("Plots/graph_logistic_regression.pdf")
