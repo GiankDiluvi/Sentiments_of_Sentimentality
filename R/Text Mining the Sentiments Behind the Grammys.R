@@ -1,3 +1,4 @@
+
 ### ### ### ### ### ### ### ###
 # Text Mining the Sentiments  #
 #     Behind the Grammys      #
@@ -9,6 +10,7 @@
 
 # Preamble ####
 library(tidyverse)
+library(readr)
 library(tidytext)
 library(geniusR)
 library(scales)
@@ -153,6 +155,7 @@ albums <- c("The Music from Peter Gunn",
 
 
 
+
 # Import lyrics
 lyrics <- tibble(track_title = character(),
                  track_n = integer(),
@@ -218,6 +221,32 @@ Albums_Songs_Words <- Decades %>%
   ) %>% 
   dplyr::mutate(SpA = Songs / Albums,
                 WpS = Words / Songs)
+
+
+# Boxplot of different number of words per song
+boxplot_WpS <- Decades %>% 
+  tidytext::unnest_tokens(word, lyric) %>% 
+  dplyr::mutate(ID = paste0(track_title, "-",
+                            track_n, "-",
+                            album),
+                Decade = factor(Decade,
+                                levels = c("60s", "70s", "80s", "90s", "00s", "10s"))) %>% 
+  dplyr::group_by(ID) %>% 
+  dplyr::mutate(WpS = n()) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(Decade, ID) %>% 
+  dplyr::summarise(WpS = mean(WpS)) %>%
+  ggplot(aes(x = Decade, y = WpS)) +
+  geom_boxplot(aes(color = Decade)) +
+  scale_color_manual(values = c(colores[3:6], colores[1:2])) +
+  labs(x = "Decade",
+       y = "Words per song") +
+  theme(text = element_text(size = 16),
+        legend.position = "none")
+  
+ggsave("Plots/Boxplot_WpS.png")
+ggsave("Plots/Boxplot_WpS.pdf")
+
 
 
 
@@ -514,6 +543,8 @@ ggsave("Plots/graph_sentiment_linear_trend.pdf")
 # Adjust model
 model <- lm(albums.sentiments$sentiment ~ albums.sentiments$year)
 summary(model)
+plot(model)
+acf(model$residuals)
 
 
 
@@ -521,15 +552,12 @@ summary(model)
 
 # IMPORT NOT-WINNERS ####
 
-# Determine which nominee will be selected each year
-set.seed(950323)
-nominees <- tibble(Year = year[available],
-                   Number = sample(1:4,
-                                   size = length(available),
-                                   replace = TRUE))
 
-# Artists and albums
+# Artists and albums ####
 artists_nw <- c("Andy Williams",
+                "Al Hirt",
+                "The Singing Nun",
+                "Al Hirt",
                 "The Beatles",
                 "Richard Rodgers",
                 "The Beatles",
@@ -586,7 +614,11 @@ artists_nw <- c("Andy Williams",
                 "Kendrick Lamar")
 
 albums_nw <- c("Days of Wine and Roses and Other TV Requests",
+               "Honey in the Horn",
+               "The Singing Nun",
+               "Cotton Candy",
                "Help",
+               "My Name is Barbra",
                "The Sound of Music Original Soundtrack Recording",
                "Revolver",
                "Ode to Billie Joe",
@@ -641,7 +673,11 @@ albums_nw <- c("Days of Wine and Roses and Other TV Requests",
                "Views",
                "Damn")
 
-# Import lyrics from not winners
+
+
+
+
+# Import lyrics from not winners ####
 lyrics_nw <- tibble(track_title = character(),
                     track_n = integer(),
                     lyric = character(),
@@ -650,35 +686,39 @@ lyrics_nw <- tibble(track_title = character(),
                     year = double())
 
 
+# Import not winners
+nw <- readr::read_csv("not_winners.csv")
 
 # Save available lyrics in the lyrics tibble for further analyses
-for(i in 1:length(albums_nw)){
+for(i in 1:length(nw$Year)){
   
-  print(paste0(albums_nw[i], " - ", artists_nw[i]))
+  print(paste0(as.character(i), " - ", nw$Album[i], " by ", nw$Artist[i]))
   
-  aux <- geniusR::genius_album(artist = artists_nw[i],
-                               album = albums_nw[i]) %>% 
-    mutate(album = albums_nw[i],
-           year = nominees$Year[i])
+  aux <- geniusR::genius_album(artist = nw$Artist[i],
+                               album = nw$Album[i]) %>% 
+    mutate(album = nw$Album[i],
+           year = nw$Year[i])
   
   #beepr::beep(2)
   
   lyrics_nw <- bind_rows(lyrics_nw, aux)
 }
-#beepr::beep(8)
+beepr::beep(2)
 
 
 # Compute net sentiment of songs
 albums.sentiments_nw <- lyrics_nw %>% 
   unnest_tokens(word, lyric) %>% 
   inner_join(get_sentiments("bing")) %>% 
-  count(year, sentiment) %>% 
+  count(album, sentiment) %>% 
   spread(sentiment, n, fill = 0) %>% 
   mutate(sentiment = positive - negative,
-         mean_sentiment = sentiment - mean(sentiment),
-         Decade = ifelse(year < 2000, 
-                         paste(as.character(10*(floor( (year - 1900) / 10) )), "s", sep = ""),
-                         ifelse(year < 2010, "00s", "10s")))
+         mean_sentiment = sentiment - mean(sentiment))
+
+
+#         Decade = ifelse(year < 2000, 
+#                         paste(as.character(10*(floor( (year - 1900) / 10) )), "s", sep = ""),
+#                         ifelse(year < 2010, "00s", "10s")))
 
 
 # LOGISTIC REGRESSION ANALYSIS ####
@@ -686,7 +726,7 @@ albums.sentiments_nw <- lyrics_nw %>%
 # Create data set
 dataset <- tibble(sentiment = c(albums.sentiments$sentiment,
                                 albums.sentiments_nw$sentiment),
-                  winner = c(rep(1, 55), rep(0, 55)))
+                  winner = c(rep(1, 55), rep(0, 209)))
 
 # Fit logistic regression
 logistic <- glm(winner ~ sentiment,
