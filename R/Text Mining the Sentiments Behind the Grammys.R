@@ -1,4 +1,3 @@
-
 ### ### ### ### ### ### ### ###
 # Text Mining the Sentiments  #
 #     Behind the Grammys      #
@@ -732,6 +731,14 @@ dataset <- tibble(sentiment = c(albums.sentiments$sentiment,
 logistic <- glm(winner ~ sentiment,
                 family = binomial(link = "logit"),
                 data = dataset)
+
+# Determine 0 and 100 values
+b0 <- as.double(logistic$coefficients[1])
+b1 <- as.double(logistic$coefficients[2])
+
+p0 <- 1 / (1 + exp(-b0))
+p100 <- 1 / (1 + exp(-b0 - 100*b1))
+
 
 
 # Graph logistic regressions
