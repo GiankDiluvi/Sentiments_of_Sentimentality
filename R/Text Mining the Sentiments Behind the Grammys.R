@@ -755,6 +755,11 @@ p100 <- 1 / (1 + exp(-b0 - 100*b1))
 # 
 # plot(xx, yy)
 
+# Determine lowest net sentiments of non-winners
+albums.sentiments_nw %>% 
+  arrange(sentiment) %>% 
+  left_join(nw, by = c("album" = "Album"))
+
 
 graph.logistic.regression <- dataset %>% 
   dplyr::mutate(Winner = ifelse(winner==1, "Yes", "No")) %>% 
@@ -768,7 +773,7 @@ graph.logistic.regression <- dataset %>%
               method.args = list(family="binomial"), 
               se = FALSE,
               color = "red") +
-  labs(x = "Sentiment",
+  labs(x = "Net Sentiment",
        y = "Estimated probability of winning",
        color = "Won the\n Grammy?") +
   scale_color_manual(values = c("orange2", "green3"),
