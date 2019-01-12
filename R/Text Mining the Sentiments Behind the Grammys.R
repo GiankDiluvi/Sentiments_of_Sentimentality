@@ -247,7 +247,49 @@ ggsave("Plots/Boxplot_WpS.png")
 ggsave("Plots/Boxplot_WpS.pdf")
 
 
+# Same boxplot but marking outliers
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
+}
 
+won <- tibble(Album = albums,
+              Artist = artists)
+
+boxplot_WpS_outliers <- Decades %>% 
+  dplyr::left_join(won, by = c("album" = "Album")) %>% 
+  tidytext::unnest_tokens(word, lyric) %>% 
+  dplyr::mutate(ID = paste0(track_title, "-",
+                            track_n, "-",
+                            album),
+                Decade = factor(Decade,
+                                levels = c("60s", "70s", "80s", "90s", "00s", "10s")),
+                info = paste0(track_title, " - ", Artist)) %>% 
+  dplyr::group_by(ID) %>% 
+  dplyr::mutate(WpS = n()) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(Decade, ID, info) %>% 
+  dplyr::summarise(WpS = mean(WpS)) %>%
+  dplyr::ungroup() %>% 
+  dplyr::group_by(Decade) %>% 
+  dplyr::mutate(outlier = ifelse(is_outlier(WpS) == 1,
+                                 info, 
+                                 as.numeric(NA))) %>% 
+  dplyr::ungroup() %>% 
+  ggplot(aes(x = Decade, y = WpS)) +
+  geom_boxplot(aes(color = Decade)) +
+  scale_color_manual(values = c(colores[3:6], colores[1:2])) +
+  labs(x = "Decade",
+       y = "Words per song") +
+  theme(text = element_text(size = 16),
+        legend.position = "none") +
+  geom_text(aes(label = outlier), 
+            na.rm = TRUE,
+            check_overlap = TRUE,
+            size = 2,
+            angle = 15)
+
+ggsave("Plots/Boxplot_WpS_outliers.png")
+ggsave("Plots/Boxplot_WpS_outliers.pdf")
 
 
 
