@@ -14,6 +14,8 @@ library(tidytext)
 library(geniusR)
 library(scales)
 library(easyGgplot2)
+library(ggrepel)
+library(wordcloud)
 library(BMS)
 library(beepr)
 theme_set(theme_classic())
@@ -292,6 +294,43 @@ ggsave("Plots/Boxplot_WpS_outliers.png")
 ggsave("Plots/Boxplot_WpS_outliers.pdf")
 
 
+# Now with ggrepel
+
+boxplot_WpS_outliers_ggrepel <- Decades %>% 
+  dplyr::left_join(won, by = c("album" = "Album")) %>% 
+  tidytext::unnest_tokens(word, lyric) %>% 
+  dplyr::mutate(ID = paste0(track_title, "-",
+                            track_n, "-",
+                            album),
+                Decade = factor(Decade,
+                                levels = c("60s", "70s", "80s", "90s", "00s", "10s")),
+                info = paste0(track_title, " - ", Artist)) %>% 
+  dplyr::group_by(ID) %>% 
+  dplyr::mutate(WpS = n()) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(Decade, ID, info) %>% 
+  dplyr::summarise(WpS = mean(WpS)) %>%
+  dplyr::ungroup() %>% 
+  dplyr::group_by(Decade) %>% 
+  dplyr::mutate(outlier = ifelse(is_outlier(WpS) == 1,
+                                 info, 
+                                 as.numeric(NA))) %>% 
+  dplyr::ungroup() %>% 
+  ggplot(aes(x = Decade, y = WpS)) +
+  geom_boxplot(aes(color = Decade)) +
+  scale_color_manual(values = c(colores[3:6], colores[1:2])) +
+  labs(x = "Decade",
+       y = "Words per song") +
+  theme(text = element_text(size = 16),
+        legend.position = "none") +
+  geom_text_repel(aes(label = outlier), 
+                  na.rm = TRUE,
+                  size = 2)
+
+ggsave("Plots/Boxplot_WpS_outliers_ggrepel.png")
+ggsave("Plots/Boxplot_WpS_outliers_ggrepel.pdf")
+
+
 
 
 
@@ -461,6 +500,75 @@ ggsave("Plots/graph_common_words_decade.pdf",
        ggplot2.multiplot(graph1, graph2, graph3,
                          graph4, graph5, graph6,
                          cols = 3))
+
+
+# Now do same plot with Facet Wrap
+
+graph_decade_total <- graph.common.words.decade %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(Decade = factor(Decade,
+                                levels = c("60s", "70s", "80s", "90s", "00s", "10s"))) %>% 
+  dplyr::arrange(Decade, n) %>%  
+  dplyr::mutate(order = row_number())
+
+graph_decade_total <- ggplot(graph_decade_total,
+                             aes(order, n, fill = Decade)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  labs(x = NULL,
+       y = "Number of occurrences") +
+  scale_y_continuous(labels = scales::comma,
+                     limits = c(0, 500)) +
+  scale_fill_manual(values = c(colores[3:6], colores[1:2])) +
+  scale_x_continuous(
+    breaks = graph_decade_total$order,
+    labels = graph_decade_total$word,
+    expand = c(0,0)
+  ) +
+  coord_flip() +
+  facet_wrap(~ Decade, scales = "free_y") +
+  guides(fill=FALSE)
+
+
+ggsave("Plots/graph_common_words_decade_FW.png")
+ggsave("Plots/graph_common_words_decade_FW.pdf")
+
+
+
+
+
+# Word cloud
+
+png(filename="Plots/Word_Cloud.png")
+par(mar = rep(0, 4))
+word_cloud <- lyrics %>% 
+  unnest_tokens(word, lyric) %>%
+  anti_join(stop_words) %>% 
+  mutate(Decade = ifelse(year < 2000, 
+                         paste(as.character(10*(floor( (year - 1900) / 10) )), "s", sep = ""),
+                         ifelse(year < 2010, "00s", "10s")),
+         Decade = factor(Decade,
+                         levels = c("60s", "70s", "80s", "90s", "00s", "10s"))) %>% 
+  group_by(Decade) %>% 
+  count(word, sort = TRUE) %>% 
+  arrange(Decade, desc(n)) %>% 
+  top_n(100, n) %>% 
+  dplyr::filter(!(Decade %in% c("60s", "70s"))) %>% 
+  dplyr::group_by(Decade) %>% 
+  dplyr::mutate(prop = n / sum(n)) %>% 
+  reshape2::acast(word ~ Decade, value.var = "prop", fill = 0) %>% 
+  comparison.cloud(max.words = 200,
+                   scale = c(2, 0.25),
+                   title.size = 2,
+                   title.bg.colors = "white",
+                   colors = colores[c(5, 6, 1, 2)])
+dev.off()
+
+
+
+
+
+
+
 
 
 
