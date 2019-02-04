@@ -873,9 +873,24 @@ albums.sentiments_nw <- lyrics_nw %>%
 # LOGISTIC REGRESSION ANALYSIS ####
 
 # Create data set
-dataset <- tibble(sentiment = c(albums.sentiments$sentiment,
+dataset <- tibble(artist = c(artists[available],
+                             albums.sentiments_nw %>% 
+                               left_join(nw, by = c("album" = "Album")) %>% 
+                               dplyr::select(Artist) %>% 
+                               pull),
+                  album = c(albums[available],
+                            albums.sentiments_nw$album),
+                  year = c(year[available],
+                           albums.sentiments_nw %>% 
+                             left_join(nw, by = c("album" = "Album")) %>% 
+                             dplyr::select(Year) %>% 
+                             pull),
+                  sentiment = c(albums.sentiments$sentiment,
                                 albums.sentiments_nw$sentiment),
-                  winner = c(rep(1, 55), rep(0, 209)))
+                  winner = c(rep(1, nrow(albums.sentiments)), 
+                             rep(0, nrow(albums.sentiments_nw))))
+
+
 
 # Fit logistic regression
 logistic <- glm(winner ~ sentiment,
@@ -912,7 +927,13 @@ albums.sentiments_nw %>%
 
 
 graph.logistic.regression <- dataset %>% 
-  dplyr::mutate(Winner = ifelse(winner==1, "Yes", "No")) %>% 
+  dplyr::mutate(Winner = ifelse(winner==1, "Yes", "No"),
+                album_by_artist = paste0(album,
+                                         " by ",
+                                         artist),
+                outlier = ifelse(sentiment < -250,
+                                 album_by_artist,
+                                 NA)) %>% 
   ggplot() +
   geom_point(aes(x = sentiment,
                  y = winner,
@@ -928,8 +949,294 @@ graph.logistic.regression <- dataset %>%
        color = "Won the\n Grammy?") +
   scale_color_manual(values = c("orange2", "green3"),
                        breaks = c("Yes", "No")) +
-  theme(text = element_text(size = 16))
+  theme(text = element_text(size = 16)) +
+  geom_label(aes(x = -575, y = 0.47, label = "The Marshall Mathers LP by Eminem"), 
+             hjust = 0, 
+             vjust = 0.5, 
+             colour = "#555555", 
+             fill = "white", 
+             label.size = NA, 
+             size = 4) +
+  geom_curve(aes(x = -625, y = 0.01, xend = -575, yend = 0.45), 
+             colour = "#555555", 
+             curvature = -0.2,
+             size=0.25) +
+  geom_label(aes(x = -346, y = 0.37, label = "The Eminem Show by Eminem"), 
+             hjust = 0, 
+             vjust = 0.5, 
+             colour = "#555555", 
+             fill = "white", 
+             label.size = NA, 
+             size = 4) +
+  geom_curve(aes(x = -396, y = 0.01, xend = -346, yend = 0.35), 
+             colour = "#555555", 
+             curvature = -0.2,
+             size=0.25) +
+  geom_label(aes(x = -232, y = 0.27, label = "Recovery by Eminem"), 
+             hjust = 0, 
+             vjust = 0.5, 
+             colour = "#555555", 
+             fill = "white", 
+             label.size = NA, 
+             size = 4) +
+  geom_curve(aes(x = -282, y = 0.01, xend = -232, yend = 0.25), 
+             colour = "#555555", 
+             curvature = -0.2,
+             size=0.25)
+  
+  
+  
+  
+  #geom_text_repel(aes(x = sentiment,
+  #                    y = winner,
+  #                    label = outlier), 
+  #                na.rm = TRUE,
+  #                size = 3,
+  #                nudge_y = 0.4,
+  #                angle = 15)
 #xseq = seq(-300, 300, length=2000)
 
 ggsave("Plots/graph_logistic_regression.png")
 ggsave("Plots/graph_logistic_regression.pdf")
+
+
+
+
+# Appendix ####
+
+# Define porcentaje function
+porcentaje <- function(x, digits = 1){
+  paste0(round(100*x, digits), "%")
+}
+
+# Define numero function
+numero <- function(x, digits = 0){
+  paste0(round(x, digits))
+}
+
+
+
+# Net sentiment histogram
+data_labels <- tibble(x = c(-575, -346, -232),
+                      y = c(25, 20, 15),
+                      lab = c("The Marshall Mathers LP by Eminem",
+                              "The Eminem Show by Eminem",
+                              "Recovery by Eminem"),
+                      Winner = factor("Nominated to the Grammy but did not win",
+                                      levels = c("Won Grammy Award for Album of the Year", 
+                                                 "Nominated to the Grammy but did not win")))
+data_curves <- tibble(x = c(-623, -403, -275),
+                      xend = c(-575, -346, -232),
+                      y = c(2, 2, 2),
+                      yend = c(23, 18, 13),
+                      Winner = factor("Nominated to the Grammy but did not win",
+                                      levels = c("Won Grammy Award for Album of the Year", 
+                                                 "Nominated to the Grammy but did not win")))
+
+data_labels_positive <- tibble(x = 100,
+                              y = 20,
+                              lab = "Acoustic Soul by India Arie",
+                              Winner = factor("Nominated to the Grammy but did not win",
+                                              levels = c("Won Grammy Award for Album of the Year", 
+                                                         "Nominated to the Grammy but did not win")))
+data_curves_positive <- tibble(x = 270,
+                               xend = 310,
+                               y = 2,
+                               yend = 18,
+                               Winner = factor("Nominated to the Grammy but did not win",
+                                               levels = c("Won Grammy Award for Album of the Year", 
+                                                          "Nominated to the Grammy but did not win")))
+
+
+net_sentiment_histogram <- dataset %>%
+  dplyr::mutate(Winner = ifelse(winner==1, "Won Grammy Award for Album of the Year",
+                                "Nominated to the Grammy but did not win"),
+                Winner = factor(Winner, levels = c("Won Grammy Award for Album of the Year", 
+                                                   "Nominated to the Grammy but did not win"))) %>% 
+  ggplot(aes(x = sentiment, fill = Winner)) +
+  geom_histogram(bins = 50,
+                 color = "white") +
+  facet_wrap(.~Winner,
+             nrow = 2,
+             scales = "free_y") +
+  labs(x = "Net Sentiment",
+       y = "Number of albums",
+       fill = "Won the\n Grammy?") +
+  scale_fill_manual(values = c("green3", "orange2"),
+                     breaks = c("No", "Yes")) +
+  scale_y_continuous(labels = numero) +
+  theme(text = element_text(size = 16),
+        strip.background = element_blank(),
+        panel.spacing = unit(1, "lines")) +
+  geom_label(data = data_labels,
+             aes(x = x, y = y, label = lab),
+             hjust = 0, 
+             vjust = 0.5, 
+             colour = "#555555", 
+             fill = "white", 
+             label.size = NA, 
+             size = 3) +
+  geom_curve(data = data_curves,
+             aes(x = x, y = y, xend = xend, yend = yend),
+             colour = "#555555", 
+             curvature = -0.2,
+             size=0.25)
+
+
+  # geom_label(data = data_labels_positive,
+  #            aes(x = x, y = y, label = lab),
+  #            hjust = 0, 
+  #            vjust = 0.5, 
+  #            colour = "#555555", 
+  #            fill = "white", 
+  #            label.size = NA, 
+  #            size = 3) +
+  # geom_curve(data = data_curves_positive,
+  #            aes(x = x, y = y, xend = xend, yend = yend),
+  #            colour = "#555555", 
+  #            curvature = 0.2,
+  #            size=0.25)
+
+ggsave("Plots/graph_net_sentiment_histogram.png")
+ggsave("Plots/graph_net_sentiment_histogram.pdf")
+
+
+
+# 2019 nominees Analysis ####
+nominees_2019 <- tibble(artist = c("Cardi B",
+                                   "Brandi Carlile",
+                                   "Drake",
+                                   "Her",
+                                   "Post Malone",
+                                   "Janelle Monae",
+                                   "Kacey Musgraves",
+                                   "Kendrick Lamar The Weeknd and SZA"),
+                        album = c("Invasion of Privacy",
+                                  "By The Way I Forgive You",
+                                  "Scorpion",
+                                  "H E R",
+                                  "Beerbongs Bentleys",
+                                  "Dirty Computer",
+                                  "Golden Hour",
+                                  "Black Panther The Album Music from and Inspired By"),
+                        year = rep(2019, 8))
+
+
+
+# Import lyrics
+lyrics_nominees <- tibble(track_title = character(),
+                          track_n = integer(),
+                          lyric = character(),
+                          line = integer(),
+                          album = character(),
+                          year = double())
+
+
+
+# Save available lyrics in the lyrics tibble for further analyses
+for(i in 1:nrow(nominees_2019)){
+  aux <- geniusR::genius_album(artist = nominees_2019$artist[i],
+                               album = nominees_2019$album[i]) %>% 
+    mutate(album = nominees_2019$album[i],
+           year = nominees_2019$year[i])
+  
+  lyrics_nominees <- bind_rows(lyrics_nominees, aux)
+}
+
+
+# Get albums sentiments
+nominees.sentiments <- lyrics_nominees %>% 
+  unnest_tokens(word, lyric) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  count(album, sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(sentiment = positive - negative)
+
+
+# Add to nominees data set
+nominees_2019 <- nominees_2019 %>% 
+  dplyr::left_join(nominees.sentiments) %>%
+  dplyr::select(artist, album, year, sentiment) %>% 
+  dplyr::mutate(winner = 0)
+
+
+
+# Create labels info
+data_labels_trend <- tibble(x = 2020,
+                            y = c(-64, -46, -32, 91, -9, 40, 18, -89),
+                            lab = c("Invasion of Privacy \nby Cardi B",
+                                    "By The Way I Forgive \nYou by Brandi Carlile",
+                                    "Scorpion by Drake",
+                                    "HER by HER",
+                                    "Beerbongs & Bentleys \nby Post Malone",
+                                    "Dirty Computer by \nJanelle Monae",
+                                    "Golden Hour by \nKacey Musgraves",
+                                    "Black Panther \nSoundtrack"))
+
+
+# Add to trend plot
+trend_2019 <- sentiments_trend +
+  xlim(1960, 2030) +
+  geom_point(data = nominees_2019 %>% 
+               dplyr::mutate(Decade = "10s"),
+             aes(x = year, y = sentiment, color = Decade),
+             size = 3) +
+  geom_label(data = data_labels_trend,
+             aes(x = x, y = y, label = lab),
+             hjust = 0, 
+             vjust = 0.5, 
+             colour = "#555555", 
+             fill = "white", 
+             label.size = NA, 
+             size = 2)
+
+
+ggsave("Plots/graph_2019_trend.png")
+ggsave("Plots/graph_2019_trend.pdf")
+
+
+### ### ###
+
+# Histogram w/bbplot, BBC's package for data viz
+
+library(bbplot)
+bbc_histogram <- dataset %>%
+  dplyr::mutate(Winner = ifelse(winner==1, "Won Grammy Award for Album of the Year",
+                                "Nominated to the Grammy but did not win"),
+                Winner = factor(Winner, levels = c("Won Grammy Award for Album of the Year", 
+                                                   "Nominated to the Grammy but did not win"))) %>% 
+  ggplot(aes(x = sentiment, fill = Winner)) +
+  geom_histogram(bins = 50,
+                 color = "white") +
+  facet_wrap(.~Winner,
+             nrow = 2,
+             scales = "free_y") +
+  labs(title = "Why so serious?",
+       subtitle = "Histograms of Grammy nominees and winners' net sentiment",
+       x = "Net Sentiment",
+       y = "Number of albums",
+       fill = "Won the\n Grammy?") +
+  scale_fill_manual(values = c("green3", "orange2"),
+                    breaks = c("No", "Yes")) +
+  scale_y_continuous(labels = numero) +
+  geom_label(data = data_labels,
+             aes(x = x, y = y, label = lab),
+             hjust = 0, 
+             vjust = 0.5, 
+             colour = "#555555", 
+             fill = "white", 
+             label.size = NA, 
+             size = 3.5) +
+  geom_curve(data = data_curves,
+             aes(x = x, y = y, xend = xend, yend = yend),
+             colour = "#555555", 
+             curvature = -0.2,
+             size=0.25) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  bbc_style() +
+  theme(strip.background = element_blank())
+
+
+finalise_plot(plot_name = bbc_histogram,
+              source = "Sources: Genius, RGenius, tidytext. Grammy Awards from 1960 to 2018.",
+              save_filepath = "Plots/BBC_histogram.png")
