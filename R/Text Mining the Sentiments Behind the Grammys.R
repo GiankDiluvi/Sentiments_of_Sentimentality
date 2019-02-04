@@ -677,7 +677,8 @@ sentiments_trend <- albums.sentiments %>%
   ggplot(aes(year, sentiment)) +
   geom_point(aes(color = Decade),
              size = 3) +
-  geom_line() +
+  geom_line(size = 0.1,
+            color = "grey60") +
   geom_smooth(method = "lm",
               color = "red",
               se = FALSE) +
