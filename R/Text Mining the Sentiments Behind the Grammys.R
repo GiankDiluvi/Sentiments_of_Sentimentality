@@ -51,6 +51,9 @@ lyrics <- tibble(track_title = character(),
                  year = double(),
                  winner = int())
 
+
+# As of February 9, 2019 there is an issue with album no. 24, Paul Simon's Graceland.
+# GeniusR crashes when trying to download its lyrics, so they are added manually afterwards
 for(i in 1:nrow(dataset)){
     
     # Monitor progress
@@ -82,17 +85,67 @@ lyrics <- lyrics %>%
     dplyr::left_join(dataset %>% dplyr::select(album, winner))
 
 
+# Get Paul Simon's Graceland lyrics manually and add them to the lyrics dataset
+
+# Get songs and exclude You Can Call Me Al (demo version), whose
+# lyrics are missing from Genius.com as of Feb. 9, 2019
+ps_graceland_songs <- genius::genius_tracklist("Paul Simon", "Graceland") %>% 
+    dplyr::filter(track_n != 15) %>% 
+    dplyr::select(track_title)
+
+# Get song lyrics one by one and merge
+ps_graceland <- tibble(track_title = character(),
+                       track_n = integer(),
+                       lyric = character(),
+                       line = integer(),
+                       album = character(),
+                       year = double(),
+                       Decade = character(),
+                       winner = integer())
+
+for(i in 1:nrow(ps_graceland_songs)){
+    aux_ps <- genius::genius_lyrics(artist = "Paul Simon",
+                                    song = ps_graceland_songs$track_title[i],
+                                    info = "all") %>% 
+        dplyr::mutate(Decade = "80s",
+                      album = "Graceland",
+                      year = 1987,
+                      winner = 1L,
+                      track_n = i) %>% 
+        dplyr::select(track_title,
+                      track_n,
+                      lyric,
+                      line,
+                      album,
+                      year,
+                      Decade,
+                      winner)
+    ps_graceland <- bind_rows(ps_graceland, aux_ps)
+}
+
+# Convert Decade to factor
+ps_graceland <- ps_graceland %>% 
+    dplyr::mutate(Decade = factor(Decade, levels = c("60s",
+                                                     "70s",
+                                                     "80s",
+                                                     "90s",
+                                                     "00s",
+                                                     "10s")))
+
+# Add to new lyrics database in order to safekep lyrics
+lyrics_2 <- bind_rows(lyrics, ps_graceland)
+
 # SONG ANALYSIS ####
 
 # Compute different number of songs
-num.songs <- lyrics %>% 
+num.songs <- lyrics_2 %>% 
     dplyr::filter(winner == 1) %>% 
     dplyr::distinct(track_title) %>% 
     dplyr::count() %>% 
     dplyr::pull()
 
 # Compute different number of albums
-num.albums <- lyrics %>% 
+num.albums <- lyrics_2 %>% 
     dplyr::filter(winner == 1) %>% 
     dplyr::distinct(album) %>% 
     dplyr::count() %>% 
@@ -102,7 +155,7 @@ num.albums <- lyrics %>%
 num.songs / num.albums
 
 # Compute total number of words
-num.words <- lyrics %>%
+num.words <- lyrics_2 %>%
     dplyr::filter(winner == 1) %>% 
     tidytext::unnest_tokens(word, lyric) %>% 
     dplyr::count() %>% 
@@ -113,18 +166,18 @@ num.words / num.songs
 
 
 # Compute average number of albums, songs, and words per decade
-Albums_Songs_Words <- lyrics %>% 
+Albums_Songs_Words <- lyrics_2 %>% 
     dplyr::filter(winner == 1) %>% 
     dplyr::group_by(Decade) %>% 
     dplyr::summarise(Songs = n_distinct(track_title)) %>% 
     dplyr::left_join(
-        lyrics %>% 
+        lyrics_2 %>% 
             dplyr::filter(winner == 1) %>% 
             dplyr::group_by(Decade) %>% 
             dplyr::summarise(Albums = n_distinct(album))
     ) %>% 
     dplyr::left_join(
-        lyrics %>% 
+        lyrics_2 %>% 
             dplyr::filter(winner == 1) %>% 
             tidytext::unnest_tokens(word, lyric) %>% 
             dplyr::group_by(Decade) %>% 
@@ -136,7 +189,7 @@ Albums_Songs_Words <- lyrics %>%
 
 
 # Boxplot of different number of words per song
-boxplot_WpS <- lyrics %>% 
+boxplot_WpS <- lyrics_2 %>% 
     dplyr::filter(winner == 1) %>% 
     tidytext::unnest_tokens(word, lyric) %>% 
     dplyr::mutate(ID = paste0(track_title, "-",
@@ -163,7 +216,7 @@ ggsave("Plots/Boxplot_WpS.pdf")
 # FRECUENCY ANALYSIS ####
 
 # Common words overall
-graph.common.words <- lyrics %>% 
+graph.common.words <- lyrics_2 %>% 
     dplyr::filter(winner == 1) %>% 
     unnest_tokens(word, lyric) %>% 
     anti_join(stop_words) %>% 
@@ -184,7 +237,7 @@ ggsave("Plots/graph_common_words.pdf")
 
 
 # Common words by decade
-graph_decade_total <- lyrics %>% 
+graph_decade_total <- lyrics_2 %>% 
     dplyr::filter(winner == 1) %>% 
     unnest_tokens(word, lyric) %>%
     anti_join(stop_words) %>% 
@@ -229,7 +282,7 @@ ggsave("Plots/graph_common_words_decade_FW.pdf")
 # NET SENTIMENT ANALYSIS ####
 
 # Save sentiments in new data set
-albums.sentiments <- lyrics %>% 
+albums.sentiments <- lyrics_2 %>% 
     unnest_tokens(word, lyric) %>% 
     inner_join(get_sentiments("bing")) %>% 
     count(album, year, winner, Decade, sentiment) %>% 
