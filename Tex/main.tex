@@ -87,7 +87,7 @@ The Grammy Awards, named in honor of the gramophone, are arguably one of the mos
 
 %Text mining techniques can be applied to texts from different origins, such as political speeches, novels or, yes, song lyrics. With it, different texts can be objectively compared. \\
 
-For this analysis, and with the help of the \texttt{geniusR} package in \textsf{R} (Parry, 2018), I obtained from \href{https://genius.com/}{\bulurl{Genius}}, an online song lyrics repository, the lyrics in English of all the songs of each album that won the Grammy Award for Album of the Year from 1960 to 2018. It should be mentioned that four albums, all from the 60's, were omitted from the analysis: Bob Newhart's 1961 \textit{The Button-Down Mind of Bob Newhart} and Vaughn Meader's 1963 \textit{The First Family} are comedy albums; Judy Garland's 1962 \textit{Judy at Carnegie Hall} is a live album; and Stan Getz and Jo\~{a}o Gilberto's 1964 \textit{Getz/Gilberto} has lyrics in Portuguese.  \\
+For this analysis, and with the help of the \texttt{genius} package in \textsf{R} (Parry, 2018), I obtained from \href{https://genius.com/}{\bulurl{Genius}}, an online song lyrics repository, the lyrics in English of all the songs of each album that won the Grammy Award for Album of the Year from 1960 to 2019. It should be mentioned that four albums, all from the 60's, were omitted from the analysis: Bob Newhart's 1961 \textit{The Button-Down Mind of Bob Newhart} and Vaughn Meader's 1963 \textit{The First Family} are comedy albums; Judy Garland's 1962 \textit{Judy at Carnegie Hall} is a live album; and Stan Getz and Jo\~{a}o Gilberto's 1964 \textit{Getz/Gilberto} has lyrics in Portuguese.  \\
 
 %Henry Mancini's 1959 \textit{The Music from Peter Gunn} is instrumental; 
 
@@ -101,18 +101,18 @@ For this analysis, and with the help of the \texttt{geniusR} package in \textsf{
 %As time passes, not only do bigger amounts of data become easier to access, but also in much more different forms. As such, it is of interest to develop techniques that allow us to analyze this ever-growing data heterogeneity. \textit{Text mining} is but one such set of techniques, whose purpose is to process, transform, and study information in the form of text so that statistical conclusions can be derived from it. \\
 
 
-After joining the lyrics of the 55 albums---comprising 746 songs---in a single data set, it was possible to start analyzing the data via \textit{text mining}, a set of techniques whose purpose is to process, transform, and study information in the form of text so that statistical conclusions can be derived from it. For instance, the average number of songs per album throughout this period is roughly 14, with the 80s having a low 11.4 and the 2000s having the largest at more than 16 (mainly due to Outkast's 2003 \textit{Speakerboxxx/The Love Below}, which featured 40 songs). \\
+After joining the lyrics of the 56 albums---comprising 761 songs---in a single data set, it was possible to start analyzing the data via \textit{text mining}, a set of techniques whose purpose is to process, transform, and study information in the form of text so that statistical conclusions can be derived from it. For instance, the average number of songs per album throughout this period is around 13.5, with the 80s having a low 11.5 and the 2000s having the largest at more than 16 (mainly due to Outkast's 2003 \textit{Speakerboxxx/The Love Below}, which featured 40 songs). \\
 
 %\newpage
 
-There are exactly 179,381 words in my data set, averaging around 240 per song. The 60s are by far the decade with the lowest average word count per song, with 160, versus the much higher 302 from 2010 to 2018. Figure \ref{fig:boxplot_WpS} shows how there seems to be a slight increase in the number of words per song over time. \\
+There are exactly 185,091 words in my data set, averaging around 240 per song. The 60s are by far the decade with the lowest average word count per song, with 161, versus the much higher 297 from 2010 to 2019. Figure \ref{fig:boxplot_WpS} shows how there seems to be a slight increase in the number of words per song over time. \\
 
 Figure \ref{fig:common_words} shows the ten most common words in all those songs, without taking into account the usual English stop words such as `the', `of', `to', etc. (Stop words can easily be removed from a tidy data set with the \texttt{tidytext} \textsf{R} package \citep{text_mining_r}.)
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.5]{Plots/Boxplot_WpS.pdf}
-    \caption{Boxplot of the number of words per song by decade of the Grammy Albums of the Year, 1960--2018.}
+    \caption{Boxplot of the number of words per song by decade of the Grammy Albums of the Year, 1960--2019.}
     \label{fig:boxplot_WpS}
 \end{figure}
 
@@ -123,7 +123,7 @@ Figure \ref{fig:common_words} shows the ten most common words in all those songs
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.5]{Plots/graph_common_words.pdf}
-    \caption{The ten most common words of the songs of all the Grammy Albums of the Year, 1960--2018.}
+    \caption{The ten most common words of the songs of all the Grammy Albums of the Year, 1960--2019.}
     \label{fig:common_words}
 \end{figure}
 
@@ -140,7 +140,7 @@ Amusingly, although perhaps not surprisingly, `love' is the most common word acr
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.65]{Plots/graph_common_words_decade_FW.pdf}
-    \caption{The ten most common words of the songs of all the Grammy Albums of the Year, 1960--2018, by decade.}
+    \caption{The ten most common words of the songs of all the Grammy Albums of the Year, 1960--2019, by decade.}
     \label{fig:common_words_decade}
 \end{figure}
 
@@ -149,10 +149,10 @@ Amusingly, although perhaps not surprisingly, `love' is the most common word acr
 
 
 \begin{aside}
-        Something interesting in Figure \ref{fig:common_words_decade} is the appearance of rather odd words in some decades. For example, the popularity of the word `la' in the 60s is due to Barbra Streisand's 1964 interpretation of ``Who's Afraid of the Big Bad Wolf'' (``...who's afraid of the big bad wolf / tra la la la la...''), while in the 70s it mostly appears in Simon and Garfunkel's 1971 ``The Boxer.'' The word `na' appears more than 100 times in the unreleased version of Paul Simon's 1987 ``Diamonds on the Soles of Her Shoes,'' and more than 30 times in the same album's ``You Can Call Me Al,'' as well as in Michael Jackson's 1984 ``P.Y.T. (Pretty Young Thing),'' making it the third most common word of the 80s. That same decade the tenth most common word was `ih', which refers to the gasping sounds of Paul Simon's 1987 ``Homeless.'' Similarly, `bum' appears on the chorus of Stevie Wonder's 1975 ``Smile Please'' (``Bum, bum bum ditti / Bum, bum bum ditti...''). Finally, `ooh' appears a large amount of times in both OutKast's 2004 ``Roses'' (``Roses really smell like poo-ooh-ooh...'') and in the chorus of U2's 2006 ``City of Blinding Lights.'' (It can, of course, be argued that none of this expressions are real words.)
+        Something interesting in Figure \ref{fig:common_words_decade} is the appearance of rather odd words in some decades. For example, the popularity of the word `la' in the 60s is due to Barbra Streisand's 1964 interpretation of ``Who's Afraid of the Big Bad Wolf'' (``...who's afraid of the big bad wolf / tra la la la la...''); in the 70s it mostly appears in Simon and Garfunkel's 1971 ``The Boxer'' and in the 10s its popularity is due to ``Deep Blue'' by Arcade Fire. The word `na' appears more than 100 times in the unreleased version of Paul Simon's 1987 ``Diamonds on the Soles of Her Shoes,'' and more than 30 times in the same album's ``You Can Call Me Al,'' as well as in Michael Jackson's 1984 ``P.Y.T. (Pretty Young Thing),'' making it the third most common word of the 80s. Similarly, `bum' appears on the chorus of Stevie Wonder's 1975 ``Smile Please'' (``Bum, bum bum ditti / Bum, bum bum ditti...''). Finally, `ooh' appears a large amount of times in both OutKast's 2004 ``Roses'' (``Roses really smell like poo-ooh-ooh...'') and in the chorus of U2's 2006 ``City of Blinding Lights.'' (It can, of course, be argued that none of this expressions are real words.)
 \end{aside}
 
-
+%That same decade the tenth most common word was `ih', which refers to the gasping sounds of Paul Simon's 1987 ``Homeless.''
 
 
 
@@ -180,13 +180,13 @@ It is worth noting some implications of this approach. First, many English words
 
 
 
-With that in mind, I applied Liu's lexicon to every song in the data set to generate a net sentiment score by album, which is shown in Figure \ref{fig:annual_sentiment}. From this graph we can see that the first, second, and fourth albums with the greatest net sentiment belong to the 90s: Whitney Houston's 1994 \textit{The Bodyguard: Original Soundtrack Album}, Natalie Cole's 1992 \textit{Unforgettable... with Love}, and Celine Dion's 1997 \textit{Falling into You}, respectively. Moreover, the 90s are the only decade in which no album has a negative net sentiment score. The 2010s are also an interesting decade in that they have the album with the third highest net sentiment (Bruno Mars' 2018 \textit{24K Magic}), and also the one with the lowest one (Mumford \& Sons' 2013 \textit{Babel}).
+With that in mind, I applied Liu's lexicon to every song in the data set to generate a net sentiment score by album, which is shown in Figure \ref{fig:annual_sentiment}. From this graph we can see that the three albums with the greatest net sentiment belong to the 90s: Whitney Houston's 1994 \textit{The Bodyguard: Original Soundtrack Album}, Natalie Cole's 1992 \textit{Unforgettable... with Love}, and Celine Dion's 1997 \textit{Falling into You}, respectively. Moreover, the 90s are the only decade in which no album has a negative net sentiment score. The 2010s are also an interesting decade in that they have the album with the fourth highest net sentiment (Bruno Mars' 2018 \textit{24K Magic}), and also the one with the lowest one (Mumford \& Sons' 2013 \textit{Babel}).
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.5]{Plots/graph_annual_sentiment.pdf}
-    \caption{Net sentiment scores of the Grammy Albums of the Year, 1960--2018. Missing values in the 60s correspond to the 4 albums omitted from the analysis.}
+    \caption{Net sentiment scores of the Grammy Albums of the Year, 1960--2019. Missing values in the 60s correspond to the 4 albums omitted from the analysis.}
     \label{fig:annual_sentiment}
 \end{figure}
 
@@ -205,13 +205,13 @@ One could then try to study the evolution of the Grammy Albums of the Year's net
 \begin{equation*}
     \text{Net sentiment} = a + b \times \text{year},
 \end{equation*}
-where both $a$ and $b$ are unknown parameters to be estimated with the information of the albums that have won in previous years. The parameter $b$ quantifies how much the net sentiment changes from one year to the next, and it has to be statistically different from zero for the model to be significant. However, the estimated value obtained from the data ($\hat{b} = 0.125$) could not be determined to be different from zero. Figure \ref{fig:sentiment_lm} shows the data points with the estimated linear equation in red, where it is clear that there does not seem to be any meaningful relationship between the net sentiment and the year. This means that the net sentiment of Grammy Award winners, although certainly higher or lower some years, has remained relatively stable overall.  
+where both $a$ and $b$ are unknown parameters to be estimated with the information of the albums that have won in previous years. The parameter $b$ quantifies how much the net sentiment changes from one year to the next, and it has to be statistically different from zero for the model to be significant. However, the estimated value obtained from the data ($\hat{b} = 0.022$) could not be determined to be different from zero. Figure \ref{fig:sentiment_lm} shows the data points with the estimated linear equation in red, where it is clear that there does not seem to be any meaningful relationship between the net sentiment and the year. This means that the net sentiment of Grammy Award winners, although certainly higher or lower some years, has remained relatively stable overall.  
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.5]{Plots/graph_sentiment_linear_trend.pdf}
-    \caption{Net sentiment of the Grammy Albums of the Year, 1960--2018, with a linear model fit in red.}
+    \caption{Net sentiment of the Grammy Albums of the Year, 1960--2019, with a linear model fit in red.}
     \label{fig:sentiment_lm}
 \end{figure}
 
@@ -230,13 +230,13 @@ where both $a$ and $b$ are unknown parameters to be estimated with the informati
 Notably, the 90s do appear to have albums with a greater net sentiment than the 60s'---evidence that appears to favor our previous hypothesis. (However, the 60s do not seem to be a decade with particularly low net sentiments, unlike the 2000s, for example.) In order to further confirm this, I obtained the average net sentiment of all the albums by decade, which is shown in Figure \ref{fig:decade_sentiment}. \\
 
 
-By doing this it becomes evident that the 90s was the decade with the highest average net sentiment, with the 60s coming in second. Interestingly, average net sentiment in other decades seems to vary around 30, making the 60s and 90s much higher than average, with net sentiments of 44 and 78, respectively.
+By doing this it becomes evident that the 90s was the decade with the highest average net sentiment, with the 60s coming in second. Interestingly, average net sentiment in other decades seems to vary around 30, making the 60s and 90s much higher than average, with net sentiments of 49 and 77, respectively.
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.5]{Plots/graph_decade_mean_sentiment.pdf}
-    \caption{Average net sentiment scores of the Grammy Albums of the Year, 1960--2018, by decade.}
+    \caption{Average net sentiment scores of the Grammy Albums of the Year, 1960--2019, by decade.}
     \label{fig:decade_sentiment}
 \end{figure}
 
@@ -249,7 +249,7 @@ By doing this it becomes evident that the 90s was the decade with the highest av
 \section*{And what about the losers?}
 
 
-Albums that win the Grammy Award for Album of the Year are clearly outstanding, but it can be argued that merely being nominated is an honor in and of itself: albums that were nominated to the Grammy but did not win are also incredibly relevant. Thus, for every album in my original data set, I obtained the net sentiment of the albums that were also nominated that year but did not win (excluding live or comedy albums, albums whose lyrics where not in English, and classical music albums). This way I had the net sentiments of 55 albums that won and 209 albums that were only nominated. \\
+Albums that win the Grammy Award for Album of the Year are clearly outstanding, but it can be argued that merely being nominated is an honor in and of itself: albums that were nominated to the Grammy but did not win are also incredibly relevant. Thus, for every album in my original data set, I obtained the net sentiment of the albums that were also nominated that year but did not win (excluding live or comedy albums, albums whose lyrics where not in English, and classical music albums). This way I had the net sentiments of 56 albums that won and 216 albums that were only nominated. \\
 
 
 
@@ -258,14 +258,14 @@ Albums that win the Grammy Award for Album of the Year are clearly outstanding, 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.6]{Plots/graph_net_sentiment_histogram.pdf}
-    \caption{Histograms of the net sentiments of the albums that won the Grammy Award for Album of the Year (green) and those that were nominated but did not win (orange), 1960--2018.}
+    \caption{Histograms of the net sentiments of the albums that won the Grammy Award for Album of the Year (green) and those that were nominated but did not win (orange), 1960--2019.}
     \label{fig:histogram}
 \end{figure}
 
 
 
 
-Winners and nominees tend to lie in the same range: the former's first and third quartiles are 6 and 68, respectively, versus -5 and 58 for the latter. Interestingly, both winners and nominees have almost the same \textit{interquartile range} (IQR, the difference between the third and first quartiles), although the nominees' IQR is shifted ten units to the left. This means that the nominees' net sentiments tend to be lower than the winners', which is corroborated in Figure \ref{fig:histogram}. This graph also shows that there are no winners with extreme sentiments, unlike some nominees. Of special interest are the three nominated albums with the lowest net sentiment. All correspond to the same artist, Eminem, one of the most renowned rappers of all time, whose music often deals with controversial and dark themes. \\
+Winners and nominees tend to lie in the same range: the former's first and third quartiles are 7 and 71, respectively, versus -8 and 56 for the latter. Interestingly, both winners and nominees have the same \textit{interquartile range} (IQR, the difference between the third and first quartiles) of 64, although the nominees' IQR is shifted fifteen units to the left. This means that the nominees' net sentiments tend to be lower than the winners', which is corroborated in Figure \ref{fig:histogram}. This graph also shows that there are no winners with extreme sentiments, unlike some nominees. Of special interest are the three nominated albums with the lowest net sentiment. All correspond to the same artist, Eminem, one of the most renowned rappers of all time, whose music often deals with controversial and dark themes. \\
 
 
 
