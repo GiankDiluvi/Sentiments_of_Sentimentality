@@ -12,6 +12,7 @@ library(tidyverse)
 library(readr)
 library(tidytext)
 library(genius)
+library(geniusR)
 library(scales)
 library(easyGgplot2)
 library(ggrepel)
@@ -49,19 +50,19 @@ lyrics <- tibble(track_title = character(),
                  artist = character(),
                  album = character(),
                  year = double(),
-                 winner = int())
+                 winner = integer())
 
 
-# As of February 9, 2019 there is an issue with album no. 24, Paul Simon's Graceland.
+# As of February 17, 2019 there is an issue with album no. 24, Paul Simon's Graceland.
 # GeniusR crashes when trying to download its lyrics, so they are added manually afterwards
-for(i in 1:nrow(dataset)){
+for(i in c(1:23, 25:nrow(dataset))){
     
     # Monitor progress
     print(paste0(i, ".- ",
                  dataset$album[i], " by ",
                  dataset$artist[i]))
     
-    aux <- genius::genius_album(artist = dataset$artist[i],
+    aux <- geniusR::genius_album(artist = dataset$artist[i],
                                  album = dataset$album[i]) %>% 
         mutate(artist = dataset$artist[i],
                album = dataset$album[i],
@@ -70,6 +71,7 @@ for(i in 1:nrow(dataset)){
     
     lyrics <- bind_rows(lyrics, aux)
 }
+beepr::beep(2)
 
 # Add decade and winner to lyrics dataset
 lyrics <- lyrics %>% 
@@ -81,8 +83,7 @@ lyrics <- lyrics %>%
                                                      "80s",
                                                      "90s",
                                                      "00s",
-                                                     "10s"))) %>% 
-    dplyr::left_join(dataset %>% dplyr::select(album, winner))
+                                                     "10s")))
 
 
 # Get Paul Simon's Graceland lyrics manually and add them to the lyrics dataset
@@ -109,6 +110,7 @@ for(i in 1:nrow(ps_graceland_songs)){
                                     info = "all") %>% 
         dplyr::mutate(Decade = "80s",
                       album = "Graceland",
+                      artist = "Paul Simon",
                       year = 1987,
                       winner = 1L,
                       track_n = i) %>% 
@@ -116,10 +118,11 @@ for(i in 1:nrow(ps_graceland_songs)){
                       track_n,
                       lyric,
                       line,
+                      artist,
                       album,
                       year,
-                      Decade,
-                      winner)
+                      winner,
+                      Decade)
     ps_graceland <- bind_rows(ps_graceland, aux_ps)
 }
 
@@ -387,7 +390,7 @@ dataset <- dataset %>%
 # Create histogram highlighting outliers
 
 # Labels information
-data_labels <- tibble(x = c(-575, -346, -232),
+data_labels <- tibble(x = c(-632, -346, -250),
                       y = c(25, 20, 15),
                       lab = c("The Marshall Mathers LP by Eminem",
                               "The Eminem Show by Eminem",
@@ -395,8 +398,8 @@ data_labels <- tibble(x = c(-575, -346, -232),
                       Winner = factor("Nominated to the Grammy but did not win",
                                       levels = c("Won Grammy Award for Album of the Year", 
                                                  "Nominated to the Grammy but did not win")))
-data_curves <- tibble(x = c(-623, -403, -275),
-                      xend = c(-575, -346, -232),
+data_curves <- tibble(x = c(-678, -405, -273),
+                      xend = c(-632, -346, -250),
                       y = c(2, 2, 2),
                       yend = c(23, 18, 13),
                       Winner = factor("Nominated to the Grammy but did not win",
