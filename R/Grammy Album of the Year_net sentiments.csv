@@ -1,0 +1,273 @@
+artist,album,year,winner,Decade,sentiment
+Frank Sinatra,Come Dance With Me!,1960,1,60s,69
+Barbra Streisand,The Barbra Streisand Album,1964,1,60s,-8
+Frank Sinatra,September of My Years,1966,1,60s,50
+Frank Sinatra,A Man and His Music,1967,1,60s,86
+The Beatles,Sgt. Pepper's Lonely Hearts Club Band,1968,1,60s,94
+Glen Campbell,By the Time I Get to Phoenix,1969,1,60s,5
+"Blood, Sweat & Tears","Blood, Sweat Tears",1970,1,70s,34
+Simon & Garfunkel,Bridge over Troubled Water,1971,1,70s,-13
+Carole King,Tapestry,1972,1,70s,60
+George Harrison,The Concert for Bangladesh,1973,1,70s,7
+Stevie Wonder,Innervisions,1974,1,70s,71
+Stevie Wonder,Fulfillingness' First Finale,1975,1,70s,12
+Paul Simon,Still Crazy After All These Years,1976,1,70s,-18
+Stevie Wonder,Songs in the Key of Life,1977,1,70s,92
+Fleetwood Mac,Rumours,1978,1,70s,40
+Bee Gees,Saturday Night Fever: The Original Movie Sound Track,1979,1,70s,-31
+Billy Joel,52nd Street,1980,1,80s,4
+Christopher Cross,Christopher Cross,1981,1,80s,35
+John Lennon,Double Fantasy,1982,1,80s,51
+Toto,Toto IV,1983,1,80s,40
+Michael Jackson,Thriller,1984,1,80s,70
+Lionel Richie,Can't Slow Down,1985,1,80s,33
+Phil Collins,No Jacket Required,1986,1,80s,-8
+Paul Simon,Graceland,1987,1,80s,24
+U2,The Joshua Tree,1988,1,80s,-24
+George Michael,Faith,1989,1,80s,82
+Bonnie Raitt,Nick of Time,1990,1,90s,29
+Quincy Jones,Back on the Block,1991,1,90s,107
+Natalie Cole,Unforgettable... with Love,1992,1,90s,145
+Eric Clapton,Unplugged,1993,1,90s,14
+Whitney Houston,The Bodyguard: Original Soundtrack Album,1994,1,90s,167
+Tony Bennett,MTV Unplugged,1995,1,90s,7
+Alanis Morissette,Jagged Little Pill,1996,1,90s,32
+Celine Dion,Falling into You,1997,1,90s,138
+Bob Dylan,Time Out of Mind,1998,1,90s,37
+Lauryn Hill,The Miseducation of Lauryn Hill,1999,1,90s,98
+Santana,Supernatural,2e3,1,00s,67
+Steely Dan,Two Against Nature,2001,1,00s,22
+Various Artists,"O Brother, Where Art Thou? (Music from the Motion Picture)",2002,1,00s,32
+Norah Jones,Come Away with Me,2003,1,00s,-22
+OutKast,Speakerboxxx/The Love Below,2004,1,00s,88
+Ray Charles,Genius Loves Company,2005,1,00s,71
+U2,How to Dismantle an Atomic Bomb,2006,1,00s,47
+Dixie Chicks,Taking the Long Way,2007,1,00s,75
+Herbie Hancock,River: The Joni Letters,2008,1,00s,-13
+Robert Plant & Alison Krauss,Raising Sand,2009,1,00s,9
+Taylor Swift,Fearless,2010,1,10s,52
+Arcade Fire,The Suburbs,2011,1,10s,0
+Adele,21,2012,1,10s,8
+Mumford & Sons,Babel,2013,1,10s,-61
+Daft Punk,Random Access Memories,2014,1,10s,77
+Beck,Morning Phase,2015,1,10s,-23
+Taylor Swift,1989,2016,1,10s,41
+Adele,25,2017,1,10s,49
+Bruno Mars,24K Magic,2018,1,10s,131
+Jay Z,4 44,2018,0,10s,21
+Sturgill Simpson,A Sailor S Guide to Earth,2017,0,10s,5
+Richard Harris,A Tramp Shining,1969,0,60s,4
+The Beatles,Abbey Road,1970,0,70s,48
+U2,Achtung Baby,1993,0,90s,27
+IndiaArie,Acoustic Soul,2002,0,00s,270
+Steely Dan,Aja,1978,0,70s,30
+U2,All That You Can't Leave Behind,2002,0,00s,-8
+George Harrison,All Things Must Pass,1972,0,70s,35
+John Mellencamp,American Fool,1983,0,80s,69
+Green Day,American Idiot,2005,0,00s,-96
+Don McLean,American Pie,1973,0,70s,1
+Billy Joel,An Innocent Man,1984,0,80s,62
+Johnny Cash,At San Quentin,1970,0,70s,-59
+REM,Automatic for the People,1994,0,90s,-46
+Childish Gambino,"Awaken, My Love!",2018,0,10s,34
+John Denver,Back Home Again,1975,0,70s,132
+Steve Winwood,Back in the High Life,1987,0,80s,92
+Amy Winehouse,Back to Black,2008,0,00s,-37
+Michael Jackson,Bad,1988,0,80s,11
+Donna Summer,Bad Girls,1980,0,80s,161
+Walt Disney Records,Beauty and the Beast (Original Motion Picture Soundtrack),1993,0,90s,41
+The Weeknd,Beauty Behind the Madness,2016,0,10s,-20
+Charlie Rich,Behind Closed Doors,1974,0,70s,43
+Janis Ian,Between the Lines,1976,0,70s,59
+Beyonce,Beyonce,2015,0,10s,125
+Dave Matthews Band,Big Whiskey and the GrooGrux King,2010,0,10s,25
+Jack White,Blunderbuss,2013,0,10s,-44
+Simon and Garfunkel,Bookends,1969,0,60s,4
+Bruce Springsteen,Born in the U S A,1985,0,80s,32
+Lady Gaga,Born This Way,2012,0,10s,89
+Supertramp,Breakfast in America,1980,0,80s,3
+Al Jarreau,Breakin' Away,1982,0,80s,119
+George Benson,Breezin',1977,0,70s,15
+Dire Straits,Brothers in Arms,1986,0,80s,-5
+Phil Collins,But Seriously,1991,0,90s,3
+Elton John,Captain Fantastic and the Brown Dirt Cowboy,1976,0,70s,43
+Elton John,Caribou,1975,0,70s,-39
+Carpenters,Carpenters,1972,0,70s,46
+Frank Ocean,Channel Orange,2013,0,10s,56
+Paul McCartney,Chaos and Creation in the Backyard,2006,0,00s,59
+Chicago,Chicago,1971,0,70s,46
+Chicago,Chicago X,1977,0,70s,42
+Carpenters,Close to You,1971,0,70s,3
+Barbra Streisand,Color Me Barbra,1967,0,60s,48
+Shania Twain,Come on Over,1999,0,90s,63
+Usher,Confessions,2005,0,00s,-66
+John Mayer,Continuum,2007,0,00s,15
+Janet Jackson,Control,1987,0,80s,60
+Al Hirt,Cotton Candy Sugar Lips,1965,0,60s,15
+Joni Mitchell,Court and Spark,1975,0,70s,6
+"Crosby, Stills and Nash","Crosby, Stills, Nash",1970,0,70s,5
+Kendrick Lamar,Damn,2018,0,10s,-21
+Mariah Carey,Daydream,1996,0,90s,69
+Andy Williams,Days of Wine and Roses and Other TV Requests,1964,0,60s,50
+"Crosby, Stills, Nash and Young",Deja Vu,1971,0,70s,15
+Annie Lennox,Diva,1993,0,90s,-30
+Bruno Mars,Doo Wops Hooligans,2012,0,10s,20
+Foo Fighters,"Echoes, Silence, Patience, Grace",2008,0,00s,-52
+The Black Keys,El Camino,2013,0,10s,-14
+The White Stripes,Elephant,2004,0,00s,73
+Elton John,Elton John,1971,0,70s,3
+Barry Manilow,Even Now,1979,0,70s,35
+Evanescence,Fallen,2004,0,00s,-108
+TLC,FanMail,2e3,0,00s,99
+Paul McCartney,Flaming Pie,1998,0,90s,66
+Various Artists,Flashdance (Original Motion Picture Soundtrack),1984,0,80s,22
+Dixie Chicks,Fly,2e3,0,00s,45
+Frank Sinatra,Francis Albert Sinatra Antonio Carlos Jobim,1968,0,60s,9
+Eric Clapton,From the Cradle,1995,0,90s,14
+Tom Petty,Full Moon Fever,1990,0,90s,25
+Original Broadway Cast of Funny Girl,Funny Girl (Original Broadway Cast Recording),1965,0,60s,91
+Justin Timberlake,FutureSex/LoveSounds,2007,0,00s,182
+Pharrell Williams,G I R L,2015,0,10s,190
+Steely Dan,Gaucho,1982,0,80s,3
+Billy Joel,Glass Houses,1981,0,80s,-37
+Kendrick Lamar,Good Kid M A A D City,2014,0,10s,-103
+Kanye West,Graduation,2008,0,00s,112
+Barbra Streisand,Guilty,1981,0,80s,19
+Amy Grant,Heart in Motion,1992,0,90s,98
+Linda Ronstadt,Heart Like a Wheel,1976,0,70s,31
+The Beatles,Help,1966,0,60s,3
+Michael Jackson,"History Past, Present and Future, Book I",1996,0,90s,-173
+Dixie Chicks,Home,2003,0,00s,120
+Al Hirt,Honey in the Horn,1964,0,60s,5
+Eagles,Hotel California,1978,0,70s,54
+Beyonce,I Am Sasha Fierce,2010,0,10s,147
+Radiohead,In Rainbows,2009,0,00s,-29
+Sam Smith,In the Lonely Hour,2015,0,10s,44
+KD Lang,Ingenue,1993,0,90s,-13
+Vikki Carr,It Must Be Him,1968,0,60s,26
+Jesus Christ Superstar Original Studio Cast,Jesus Christ Superstar a Rock Opera,1972,0,70s,-86
+James Taylor,JT,1978,0,70s,-6
+Justin Timberlake,Justified,2004,0,00s,160
+Donald Fagen,Kamakiriad,1994,0,90s,-3
+Radiohead,Kid A,2001,0,00s,16
+Roberta Flack,Killing Me Softly,1974,0,70s,11
+Kanye West,Late Registration,2006,0,00s,33
+Beyonce,Lemonade,2017,0,10s,61
+David Bowie,Let's Dance,1984,0,80s,47
+Bonnie Raitt,Longing in Their Hearts,1995,0,90s,51
+Rihanna,Loud,2012,0,10s,92
+Bob Dylan,Love and Theft,2002,0,00s,7
+Gwen Stefani,Love. Angel. Music. Baby.,2006,0,00s,18
+Bonnie Raitt,Luck of the Draw,1992,0,90s,-7
+The Beatles,Magical Mystery Tour,1969,0,60s,29
+Mariah Carey,Mariah Carey,1991,0,90s,2
+Smashing Pumpkins,Mellon Collie and the Infinite Sadness,1997,0,90s,-48
+Lorde,Melodrama,2018,0,10s,-21
+Beck,Midnite Vultures,2001,0,00s,-3
+Backstreet Boys,Millennium,2e3,0,00s,61
+The Doobie Brothers,Minute by Minute,1980,0,80s,35
+Kim Carnes,Mistaken Identity,1982,0,80s,-18
+Neil Diamond,Moods,1973,0,70s,49
+Ed Ames,My Cup Runneth Over,1968,0,60s,26
+Barbra Streisand,My Name is Barbra,1966,0,60s,45
+Eddy Arnold,My World,1966,0,60s,21
+Lady Antebellum,Need You Now,2011,0,10s,87
+Nelly,Nellyville,2003,0,00s,0
+Frank Sinatra,Nice N Easy,1961,0,60s,32
+Harry Nilsson,Nilsson Schmilsson,1973,0,70s,27
+Sting,Nothing Like the Sun,1989,0,80s,-1
+Bobbie Gentry,Ode to Billie Joe,1968,0,60s,-8
+Beck,Odelay,1997,0,90s,-53
+Radiohead,OK Computer,1998,0,90s,-38
+Eagles,One of These Nights,1976,0,70s,-18
+REM,Out of Time,1992,0,90s,7
+Barbra Streisand,People,1965,0,60s,42
+MC Hammer,Please Hammer Don't Hurt 'Em,1991,0,90s,56
+Tina Turner,Private Dancer,1985,0,80s,78
+Prince and The Revolution,Purple Rain,1985,0,80s,-14
+Justin Bieber,Purpose,2017,0,10s,110
+Madonna,Ray of Light,1999,0,90s,10
+Eminem,Recovery,2011,0,10s,-276
+Taylor Swift,Red,2014,0,10s,119
+Joan Osborne,Relish,1996,0,90s,70
+The Beatles,Revolver,1967,0,60s,34
+Billy Joel,River of Dreams,1994,0,90s,-10
+Steve Winwood,Roll with It,1989,0,80s,41
+Jackson Browne,Running on Empty,1979,0,70s,22
+Seal,Seal,1995,0,90s,128
+Isaac Hayes,Shaft,1972,0,70s,0
+Cyndi Lauper,She's So Unusual,1985,0,80s,19
+Prince,Sign o' the Times,1988,0,80s,133
+Boz Scaggs,Silk Degrees,1977,0,70s,85
+Bobby McFerrin,Simple Pleasures,1989,0,80s,32
+The Rolling Stones,Some Girls,1979,0,70s,17
+Fun,Some Nights,2013,0,10s,22
+Alabama Shakes,Sound & Color,2016,0,10s,38
+Gnarls Barkley,St. Elsewhere,2007,0,00s,30
+Red Hot Chili Peppers,Stadium Arcadium,2007,0,00s,32
+OutKast,Stankonia,2002,0,00s,73
+James Taylor,Sweet Baby James,1971,0,70s,25
+The Police,Synchronicity,1984,0,80s,-41
+Katy Perry,Teenage Dream,2011,0,10s,68
+Sting,Ten Summoner's Tales,1994,0,90s,-13
+Lil Wayne,Tha Carter III,2009,0,00s,108
+Sara Bareilles,The Blessed Unrest,2014,0,10s,19
+Barbra Streisand,The Broadway Album,1987,0,80s,47
+Kanye West,The College Dropout,2005,0,00s,152
+Babyface,The Day,1998,0,90s,161
+Alicia Keys,The Diary of Alicia Keys,2005,0,00s,35
+Bette Midler,The Divine Miss M,1974,0,70s,3
+Sting,The Dream of the Blue Turtles,1986,0,80s,64
+Quincy Jones,The Dude,1982,0,80s,52
+The Black Eyed Peas,The E N D The Energy Never Dies,2010,0,10s,210
+Mariah Carey,The Emancipation of Mimi,2006,0,00s,47
+Eminem,The Eminem Show,2003,0,00s,-400
+Don Henley,The End of the Innocence,1990,0,90s,-32
+Lady Gaga,The Fame,2010,0,10s,173
+Lady Gaga,The Fame Monster,2011,0,10s,-26
+Kenny Rogers,The Gambler,1980,0,80s,-19
+Sheryl Crow,The Globe Sessions,1999,0,90s,-26
+Macklemore and Ryan Lewis,The Heist,2014,0,10s,126
+Eminem,The Marshall Mathers LP,2001,0,00s,-678
+Donald Fagen,The Nightfly,1983,0,80s,27
+Billy Joel,The Nylon Curtain,1983,0,80s,-9
+Fine Young Cannibals,The Raw The Cooked,1990,0,90s,-17
+Paul Simon,The Rhythm of the Saints,1992,0,90s,-31
+Bruce Springsteen,The Rising,2003,0,00s,52
+Fugees,The Score,1997,0,90s,-132
+Richard Rodgers,The Sound of Music (Original Soundtrack Recording),1966,0,60s,72
+Pink Floyd,The Wall,1981,0,80s,-31
+Paul Simon,There Goes Rhymin' Simon,1974,0,70s,145
+Vince Gill,These Days,2008,0,00s,48
+Paula Cole,This Fire,1998,0,90s,-11
+Kendrick Lamar,To Pimp a Butterfly,2016,0,10s,-199
+Tracy Chapman,Tracy Chapman,1989,0,80s,46
+The Traveling Wilburys,Traveling Wilburys Vol 1,1990,0,90s,57
+Chris Stapleton,Traveller,2016,0,10s,-18
+Frank Sinatra,Trilogy Past Present Future,1981,0,80s,158
+Dolly Parton Linda Ronstadt and Emmylou Harris,Trio,1988,0,80s,12
+Paul McCartney,Tug of War,1983,0,80s,81
+Missy Elliott,Under Construction,2004,0,00s,-12
+Garbage,Version 2 0,1999,0,90s,-34
+Drake,Views,2017,0,10s,182
+Pearl Jam,Vitalogy,1996,0,90s,4
+Coldplay,Viva la Vida or Death and All His Friends,2009,0,00s,-11
+Various Artists,Waiting to Exhale Original Soundtrack Album,1997,0,90s,23
+Foo Fighters,Wasting Light,2012,0,10s,-45
+USA for Africa,We Are the World,1986,0,80s,25
+Diana Krall,When I Look in Your Eyes,2e3,0,00s,16
+Whitney Houston,Whitney,1988,0,80s,85
+Whitney Houston,Whitney Houston,1986,0,80s,132
+Nat King Cole,Wild is Love,1961,0,60s,49
+Wilson Phillips,Wilson Phillips,1991,0,90s,-3
+Ed Sheeran,X Multiply,2015,0,10s,44
+Ne Yo,Year of the Gentleman,2009,0,00s,43
+Paul Simon,You're the One,2001,0,00s,37
+Kacey Musgraves,Golden Hour,2019,1,10s,22
+Cardi B,Invasion of Privacy,2019,0,10s,-72
+Brandi Carlile,By The Way I Forgive You,2019,0,10s,-46
+Drake,Scorpion,2019,0,10s,-32
+Her,H E R,2019,0,10s,91
+Post Malone,Beerbongs Bentleys,2019,0,10s,-9
+Janelle Monae,Dirty Computer,2019,0,10s,34
+Kendrick Lamar The Weeknd and SZA,Black Panther The Album Music from and Inspired By,2019,0,10s,-89
