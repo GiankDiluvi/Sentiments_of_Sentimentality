@@ -216,6 +216,35 @@ ggsave("Plots/Boxplot_WpS.pdf")
 
 
 
+# Violin plot of different number of words per song
+violin_WpS <- lyrics_2 %>% 
+    dplyr::filter(winner == 1) %>% 
+    tidytext::unnest_tokens(word, lyric) %>% 
+    dplyr::mutate(ID = paste0(track_title, "-",
+                              track_n, "-",
+                              album)) %>% 
+    dplyr::group_by(ID) %>% 
+    dplyr::mutate(WpS = n()) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::group_by(Decade, ID) %>% 
+    dplyr::summarise(WpS = mean(WpS)) %>%
+    ggplot(aes(x = Decade, y = WpS)) +
+    geom_violin(aes(fill = Decade),
+                alpha = 0.2) +
+    geom_jitter(aes(color = Decade),
+                width = 0.1) +
+    scale_color_manual(values = c(colores[3:6], colores[1:2])) +
+    scale_fill_manual(values = c(colores[3:6], colores[1:2])) +
+    labs(x = "Decade",
+         y = "Words per song") +
+    theme(text = element_text(size = 16),
+          legend.position = "none")
+
+ggsave("Plots/Violin_WpS.png")
+ggsave("Plots/Violin_WpS.pdf")
+
+
+
 # FRECUENCY ANALYSIS ####
 
 # Common words overall
